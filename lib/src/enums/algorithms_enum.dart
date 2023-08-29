@@ -1,2 +1,2 @@
 // Supported algorithms
-enum AlgorithmsEnum { accumulative, blackjack, breakAlgo, split }
+enum AlgorithmsEnum { accumulative, blackjack, breakAlgo, split, bnb }

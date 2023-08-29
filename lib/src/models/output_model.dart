@@ -14,6 +14,12 @@ class OutputModel extends IOModelAbstract {
   @override
   String? address;
 
+  int? fee;
+
+  int? longTermFee;
+
+  int? effectiveValue;
+
   OutputModel({this.value, this.script, this.address});
 
   OutputModel.from(OutputModel other) {
