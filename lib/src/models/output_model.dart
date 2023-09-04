@@ -45,7 +45,12 @@ class OutputModel extends IOModelAbstract {
           hex.encode(Uint8List.view(other.script!.buffer));
     }
 
-    return ((scriptOk && value == other.value && address == other.address));
+    return ((scriptOk &&
+        value == other.value &&
+        address == other.address &&
+        fee == other.fee &&
+        longTermFee == other.longTermFee &&
+        effectiveValue == other.effectiveValue));
   }
 
   @override

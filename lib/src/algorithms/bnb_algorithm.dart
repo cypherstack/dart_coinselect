@@ -6,8 +6,8 @@ const totalTries = 100000;
 List<InputModel> bnbAlgorithm(
     List<OutputModel> utxos, int selectionTarget, int costOfChange) {
   int currValue = 0;
-  List<bool> currSelection = [];
-  List<InputModel> outSet = [];
+  List<bool> currSelection = List.empty(growable: true);
+  List<InputModel> outSet = List.empty(growable: true);
 
   int currAvailableValue = 0;
 
@@ -22,7 +22,7 @@ List<InputModel> bnbAlgorithm(
   utxos.sort((a, b) => b.effectiveValue! - a.effectiveValue!);
 
   int currWaste = 0;
-  List<bool> bestSelection = [];
+  List<bool> bestSelection = List.empty(growable: true);
   int bestWaste = (21000000 * 100000000);
 
   bool isFeeRateHigh = utxos[0].fee! > utxos[0].longTermFee!;
@@ -61,11 +61,11 @@ List<InputModel> bnbAlgorithm(
       }
       //
       currSelection[currSelection.length - 1] = false;
-      // OutputModel utxo = utxos[currSelection.length--];
+      OutputModel utxo = utxos[currSelection.length--];
       // print("THIS UTXO IS ${utxo.value}");
-      // currValue -= utils.getSelectionAmount(true, utxo, i);
+      currValue -= utils.getSelectionAmount(true, utxo, i);
       // print("THIS VALUE HERE IS $currValue");
-      // currWaste -= utxo.fee! - utxo.longTermFee!;
+      currWaste -= utxo.fee! - utxo.longTermFee!;
       // currSelection.add(true);
     } else {
       OutputModel utxo = utxos[currSelection.length];
@@ -88,7 +88,7 @@ List<InputModel> bnbAlgorithm(
 
   // print("SOME ARR IS ${someArr.length}");
   //
-  // print("LENGTH AT THIS POINT IS ${bestSelection.length}");
+  print("LENGTH AT THIS POINT IS ${bestSelection.length}");
   if (bestSelection.isEmpty) {
     return [];
   }

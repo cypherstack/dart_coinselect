@@ -96,8 +96,7 @@ List<int> getRandom(List<int> arr, int n) {
   }
 
   while (n > 0) {
-    Random random = Random();
-    int number = (random.nextInt(1) * len);
+    double number = (Random().nextDouble() * len);
     int x = number.floor();
     result[n] = arr[taken.contains(x) ? taken[x] : x];
     taken[x] = taken.contains(len--) ? taken[len] : len;
@@ -106,46 +105,16 @@ List<int> getRandom(List<int> arr, int n) {
 }
 
 int getRandomInt(int minNum, int maxNum) {
-  Random random = Random();
   minNum = minNum.ceil();
   maxNum = maxNum.floor();
-  return (random.nextInt(1) * (minNum + maxNum) + minNum).floor();
-}
-
-List<OutputModel> shuffle(List<OutputModel> outputs) {
-  int currentIndex = outputs.length;
-  int randomIndex = 0;
-
-  var initialMap = new Map();
-
-  if (currentIndex != 0) {
-    Random random = Random();
-    int curr = random.nextInt(1) * currentIndex;
-    // Pick a remaining element...
-    randomIndex = curr.floor();
-    currentIndex--;
-
-    // And swap it with the current element.
-
-    // [outputs[currentIndex], outputs[randomIndex]] = [outputs[randomIndex], outputs[currentIndex]];
-  }
-  return outputs;
+  return (Random().nextDouble() * (minNum + maxNum) + minNum).floor();
 }
 
 int getSelectionAmount(
     bool subtractFeeOutputs, OutputModel utxo, int position) {
-  // print("THIS UTXO IS $utxo");
   InputModel inputUtxo = InputModel(i: position, script: utxo.script);
   utxo.effectiveValue =
       utxo.value! - (effective_fee_rate * inputBytes(inputUtxo));
-
-  // print("THIS UTXO VALUE IS ${utxo.value!}");
-  // print("THIS EFFECTIVE_FEE_RATE IS $effective_fee_rate");
-  // print("THIS BYTES VALUE IS ${inputBytes(inputUtxo)}");
-  // print("THIS PRODUCT IS ${(effective_fee_rate * inputBytes(inputUtxo))} ");
-  // print(
-  //     "RETURNED IS ${subtractFeeOutputs ? utxo.value! : utxo.effectiveValue!} ");
-  // int effectiveValue = utxo.value! - effective_fee_rate;
   return subtractFeeOutputs ? utxo.value! : utxo.effectiveValue!;
 }
 
@@ -169,22 +138,23 @@ int getSelectionWaste(List<OutputModel> inputs, int changeCost, int target,
 }
 
 Map<int, List<bool>> approximateBestSubset(
-    List<OutputModel> groups, int totalLower, int targetValue, int iterations) {
+    List<OutputModel> groups, int totalLower, int targetValue) {
   Map<int, List<bool>> _map = {};
-  iterations = 1000;
-  List<bool> vfIncluded = [];
-  List<bool> vfBest = [];
+  int iterations = 1000;
+  List<bool> vfIncluded = List.empty(growable: true);
+  List<bool> vfBest = List.empty(growable: true);
   int best = totalLower;
   for (int rep = 0; rep < iterations && best != targetValue; rep++) {
     int total = 0;
     bool reachedTarget = false;
-    for (int pass = 0; pass < 2 && !reachedTarget; pass++) {
+    for (int pass = 0; (pass < 2 && !reachedTarget); pass++) {
       for (int i = 0; i < groups.length; i++) {
         int amount = getSelectionAmount(false, groups[i], i);
-        Random random = Random();
-        if (pass == 0 ? random.nextInt(1) < 0.5 : !vfIncluded[i]) {
+
+        if (pass == 0 ? Random().nextDouble() < 0.5 : !vfIncluded[i]) {
           total += amount;
-          vfIncluded[i] = true;
+          vfIncluded.add(true);
+
           if (total >= targetValue) {
             reachedTarget = true;
             if (total < best) {
@@ -192,12 +162,14 @@ Map<int, List<bool>> approximateBestSubset(
               vfBest = vfIncluded;
             }
             total += amount;
-            vfIncluded[i] = false;
+            vfIncluded.add(false);
+            // vfIncluded[i] = false;
           }
         }
       }
     }
   }
+  // print(vfBest);
   _map[best] = vfBest;
   return _map;
 }

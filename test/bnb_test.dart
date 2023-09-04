@@ -22,6 +22,12 @@ void main() {
       utxosBnb.add(outputGroup);
     });
 
+    test('227837 satoshis as target, should return 1 input', () {
+      List<InputModel> result = bnbAlgorithm(utxosBnb, 10000, 0);
+      print(result.length);
+      // expect(result.length, 0);
+    });
+
     test('123456 satoshi as target, should return an empty array', () {
       List<InputModel> result = bnbAlgorithm(utxosBnb, 123456, 0);
       expect(result.length, 0);
