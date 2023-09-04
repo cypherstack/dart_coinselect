@@ -132,10 +132,21 @@ List<OutputModel> shuffle(List<OutputModel> outputs) {
   return outputs;
 }
 
-int getSelectionAmount(bool subtractFeeOutputs, OutputModel utxo) {
-  int effectiveValue =
-      utxo.value! - (effective_fee_rate * inputBytes(utxo as InputModel));
-  return subtractFeeOutputs ? utxo.value! : effectiveValue;
+int getSelectionAmount(
+    bool subtractFeeOutputs, OutputModel utxo, int position) {
+  // print("THIS UTXO IS $utxo");
+  InputModel inputUtxo = InputModel(i: position, script: utxo.script);
+  utxo.effectiveValue =
+      utxo.value! - (effective_fee_rate * inputBytes(inputUtxo));
+
+  // print("THIS UTXO VALUE IS ${utxo.value!}");
+  // print("THIS EFFECTIVE_FEE_RATE IS $effective_fee_rate");
+  // print("THIS BYTES VALUE IS ${inputBytes(inputUtxo)}");
+  // print("THIS PRODUCT IS ${(effective_fee_rate * inputBytes(inputUtxo))} ");
+  // print(
+  //     "RETURNED IS ${subtractFeeOutputs ? utxo.value! : utxo.effectiveValue!} ");
+  // int effectiveValue = utxo.value! - effective_fee_rate;
+  return subtractFeeOutputs ? utxo.value! : utxo.effectiveValue!;
 }
 
 int getSelectionWaste(List<OutputModel> inputs, int changeCost, int target,
@@ -169,7 +180,7 @@ Map<int, List<bool>> approximateBestSubset(
     bool reachedTarget = false;
     for (int pass = 0; pass < 2 && !reachedTarget; pass++) {
       for (int i = 0; i < groups.length; i++) {
-        int amount = getSelectionAmount(false, groups[i]);
+        int amount = getSelectionAmount(false, groups[i], i);
         Random random = Random();
         if (pass == 0 ? random.nextInt(1) < 0.5 : !vfIncluded[i]) {
           total += amount;

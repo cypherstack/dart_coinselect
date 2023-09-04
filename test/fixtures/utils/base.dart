@@ -172,12 +172,15 @@ class Fixture {
 
   final FixtureExpected expected;
 
+  final int? value;
+
   Fixture(
       {required this.description,
       required this.feeRate,
       required this.inputs,
       required this.outputs,
-      required this.expected});
+      required this.expected,
+      required this.value});
 
   factory Fixture.fromJSON(Map<String, dynamic> obj) {
     return Fixture(
@@ -185,6 +188,7 @@ class Fixture {
         feeRate: obj['feeRate'] as int,
         inputs: toFixtureInput(obj['inputs']),
         outputs: toFixtureOutput(obj['outputs']),
-        expected: FixtureExpected.fromJSON(obj['expected']));
+        expected: FixtureExpected.fromJSON(obj['expected']),
+        value: obj['value'] as int);
   }
 }

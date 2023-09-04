@@ -20,12 +20,21 @@ class OutputModel extends IOModelAbstract {
 
   int? effectiveValue;
 
-  OutputModel({this.value, this.script, this.address});
+  OutputModel(
+      {this.value,
+      this.script,
+      this.address,
+      this.fee,
+      this.longTermFee,
+      this.effectiveValue});
 
   OutputModel.from(OutputModel other) {
     script = other.script;
     value = other.value;
     address = other.address;
+    fee = other.fee;
+    longTermFee = other.longTermFee;
+    effectiveValue = other.effectiveValue;
   }
 
   // Compares two OutputModels. Checks equality status
@@ -45,6 +54,9 @@ class OutputModel extends IOModelAbstract {
     if (address != null) str.add('"address": "$address"');
     if (value != null) str.add('"value": $value');
     if (script != null) str.add('"script": "${script.toString()}"');
+    if (fee != null) str.add('"fee": "$fee"');
+    if (longTermFee != null) str.add('"longTermFee": "$longTermFee"');
+    if (effectiveValue != null) str.add('"effectiveValue": "$effectiveValue"');
 
     return "{${str.join(",")}}";
   }
