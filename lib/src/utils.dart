@@ -144,14 +144,15 @@ Map<int, List<bool>> approximateBestSubset(
   List<bool> vfIncluded = List.empty(growable: true);
   List<bool> vfBest = List.empty(growable: true);
   int best = totalLower;
-  for (int rep = 0; rep < iterations && best != targetValue; rep++) {
+  for (int rep = 0; rep < iterations && best != targetValue; ++rep) {
     int total = 0;
     bool reachedTarget = false;
-    for (int pass = 0; (pass < 2 && !reachedTarget); pass++) {
-      for (int i = 0; i < groups.length; i++) {
+    for (var pass = 0; (pass < 2 && !reachedTarget); pass++) {
+      for (var i = 0; i < groups.length; i++) {
         int amount = getSelectionAmount(false, groups[i], i);
-
-        if (pass == 0 ? Random().nextDouble() < 0.5 : !vfIncluded[i]) {
+        if (pass == 0
+            ? Random().nextDouble() < 0.5
+            : !(vfIncluded.length > i ? vfIncluded[i] : false)) {
           total += amount;
           vfIncluded.add(true);
 
@@ -163,13 +164,11 @@ Map<int, List<bool>> approximateBestSubset(
             }
             total += amount;
             vfIncluded.add(false);
-            // vfIncluded[i] = false;
           }
         }
       }
     }
   }
-  // print(vfBest);
   _map[best] = vfBest;
   return _map;
 }
