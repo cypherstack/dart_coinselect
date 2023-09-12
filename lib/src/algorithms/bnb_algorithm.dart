@@ -3,11 +3,11 @@ import 'package:dart_coinselect/src/models/models.dart';
 
 const totalTries = 100000;
 
-List<OutputModel> bnbAlgorithm(
+List<InputModel> bnbAlgorithm(
     List<OutputModel> utxos, int selectionTarget, int costOfChange) {
   int currValue = 0;
   List<bool> currSelection = List.empty(growable: true);
-  List<OutputModel> outSet = List.empty(growable: true);
+  List<InputModel> outSet = List.empty(growable: true);
   int currAvailableValue = 0;
 
   utxos.asMap().forEach((key, value) {
@@ -88,7 +88,9 @@ List<OutputModel> bnbAlgorithm(
 
   for (int i = 0; i < bestSelection.length; i++) {
     if (bestSelection[i]) {
-      outSet.add(utxos[i]);
+      InputModel utxo =
+          InputModel(i: i, value: utxos[i].value, script: utxos[i].script);
+      outSet.add(utxo);
     }
   }
 

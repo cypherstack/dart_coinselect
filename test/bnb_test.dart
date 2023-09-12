@@ -2,12 +2,9 @@ import 'dart:convert';
 
 import 'package:dart_coinselect/dart_coinselect.dart';
 import 'package:dart_coinselect/src/algorithms/bnb_algorithm.dart';
-import 'package:dart_coinselect/src/enums/algorithms_enum.dart';
 import 'package:dart_coinselect/src/models/models.dart';
-import 'package:dart_coinselect/src/models/selection_model.dart';
 import 'package:test/test.dart';
 
-// import 'fixtures/fixtures.dart' as utxos_json;
 import 'fixtures/bnb.dart' as utxos_json;
 
 void main() {
@@ -23,12 +20,12 @@ void main() {
     });
 
     test('227837 satoshis as target, should return 1 input', () {
-      List<OutputModel> result = bnbAlgorithm(utxosBnb, 10000, 0);
+      List<InputModel> result = bnbAlgorithm(utxosBnb, 10000, 0);
       expect(result.length, 1);
     });
 
     test('123456 satoshi as target, should return an empty array', () {
-      List<OutputModel> result = bnbAlgorithm(utxosBnb, 123456, 0);
+      List<InputModel> result = bnbAlgorithm(utxosBnb, 123456, 0);
       expect(result.length, 0);
     });
   });

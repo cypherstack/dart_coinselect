@@ -1,6 +1,8 @@
 import 'dart:convert';
 
+import 'package:dart_coinselect/src/abstracts/io_model_abstract.dart';
 import 'package:dart_coinselect/src/algorithms/knapsack_algorithm.dart';
+import 'package:dart_coinselect/src/utils.dart';
 import 'package:test/test.dart';
 import 'package:dart_coinselect/src/models/models.dart';
 import 'fixtures/bnb.dart' as utxos_json;
@@ -19,16 +21,13 @@ void main() {
 
     test('100000 satoshis as target, the sum should be greater than 100000',
         () {
-      List<OutputModel> result = knapsack(utxos, 100000);
-      int sum = 0;
-      for (var number in result) {
-        sum += number.value!;
-      }
+      List<IOModelAbstract> result = knapsack(utxos, 100000);
+      int? sum = sumForgiving(result);
       expect(sum, greaterThan(100000));
     });
 
     test('10000 satoshis as target, should return 2 inputs', () {
-      List<OutputModel> result = knapsack(utxos, 10000);
+      List<IOModelAbstract> result = knapsack(utxos, 10000);
       expect(result.length, 2);
     });
   });

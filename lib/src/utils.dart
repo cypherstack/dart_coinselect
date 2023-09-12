@@ -123,11 +123,11 @@ int getSelectionWaste(List<OutputModel> inputs, int changeCost, int target,
   int waste = 0;
   int selectedEffectiveValue = 0;
 
-  inputs.forEach((element) {
-    waste += element.fee! - element.longTermFee!;
+  for (var element in inputs) {
+    waste += (element.fee ?? 0) - (element.longTermFee ?? 0);
     selectedEffectiveValue +=
         useEffectiveValue ? element.effectiveValue! : element.value!;
-  });
+  }
 
   if (changeCost > 0) {
     waste += changeCost;

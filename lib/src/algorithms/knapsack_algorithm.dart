@@ -3,7 +3,7 @@ import 'package:dart_coinselect/src/utils.dart';
 
 const minChange = 500;
 
-List<OutputModel> knapsack(List<OutputModel> utxos, int targetValue) {
+List<InputModel> knapsack(List<OutputModel> utxos, int targetValue) {
   OutputModel lowestLarger = OutputModel();
   List<OutputModel> applicableGroups = List.empty(growable: true);
   List<OutputModel> setCoinsRet = List.empty(growable: true);
@@ -24,16 +24,25 @@ List<OutputModel> knapsack(List<OutputModel> utxos, int targetValue) {
   });
 
   if (totalLower == targetValue) {
-    return applicableGroups;
+    List<InputModel> returnData = List.empty(growable: true);
+    applicableGroups.asMap().forEach((key, element) {
+      returnData.add(
+          InputModel(i: key, value: element.value, script: element.script));
+    });
+    return returnData;
   }
 
   if (totalLower < targetValue) {
     if (lowestLarger.isEqual(OutputModel())) return [];
-    return [lowestLarger];
+    return [
+      InputModel(i: 0, value: lowestLarger.value, script: lowestLarger.script)
+    ];
   }
   applicableGroups.sort((a, b) => b.value! - a.value!);
+  // print("APPLICABLE GROUPS IS $applicableGroups");
   Map<int, List<bool>> abs =
       approximateBestSubset(applicableGroups, totalLower, targetValue);
+  // print("ABS IS ${abs}");
 
   if (abs.keys.first != targetValue && totalLower >= targetValue + minChange) {
     abs = approximateBestSubset(
@@ -44,12 +53,18 @@ List<OutputModel> knapsack(List<OutputModel> utxos, int targetValue) {
           (abs.keys.first != targetValue &&
               abs.keys.first < targetValue + minChange) ||
       getSelectionAmount(false, lowestLarger, 0) <= abs.keys.first) {
-    return [lowestLarger];
+    return [
+      InputModel(i: 0, value: lowestLarger.value, script: lowestLarger.script)
+    ];
   } else {
-    List<OutputModel> finalReturn = List.empty(growable: true);
+    List<InputModel> finalReturn = List.empty(growable: true);
     for (int i = 0; i < applicableGroups.length; i++) {
       if (abs.values.isNotEmpty) {
-        finalReturn.add(applicableGroups[i]);
+        finalReturn.add(InputModel(
+            i: i,
+            value: applicableGroups[i].value,
+            script: applicableGroups[i].script));
+        // finalReturn.add(applicableGroups[i]);
       }
     }
     return finalReturn;
