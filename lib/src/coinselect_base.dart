@@ -72,28 +72,21 @@ Map<dynamic, dynamic> coinSelection(List<OutputModel> utxos,
     OutputModel coin = OutputModel(
         value: utxo.value!,
         script: utxo.script,
-        fee: utxo.fee,
-        longTermFee: utxo.longTermFee);
+        fee: utxo.fee ?? feeRate,
+        longTermFee: utxo.longTermFee ?? longTermFee);
     coins.add(coin);
   }
 
-  // print(coins);
+  final srdOutputs = outputs.toList();
+  final bnbOutputs = outputs.toList();
+  final ksOutputs = outputs.toList();
 
-  print(srd(coins, amountWithFees));
   SelectionModel srdResult =
-      utils.finalize(srd(coins, amountWithFees), outputs, feeRate);
-  SelectionModel bnbResult =
-      utils.finalize(bnbAlgorithm(coins, amountWithFees, 0), outputs, feeRate);
+      utils.finalize(srd(coins, amountWithFees), srdOutputs, feeRate);
+  SelectionModel bnbResult = utils.finalize(
+      bnbAlgorithm(coins, amountWithFees, 0), bnbOutputs, feeRate);
   SelectionModel knapsackResult =
-      utils.finalize(knapsack(coins, amountWithFees), outputs, feeRate);
-
-  print(srdResult);
-  // print(bnbResult);
-  // print(knapsackResult);
-
-  // print("SRD RESULT IS $srd_result");
-  // var selection_waste =
-  //     utils.getSelectionWaste(srd_result.outputs!, 10, amountWithFees, false);
+      utils.finalize(knapsack(coins, amountWithFees), ksOutputs, feeRate);
 
   List<Map<dynamic, dynamic>> result = [
     {
@@ -119,35 +112,6 @@ Map<dynamic, dynamic> coinSelection(List<OutputModel> utxos,
     }
   ];
 
-  int min = 0;
-  print("I AM PRINTING THIS VALUE ${result.map((e) => e['waste'])}");
-
-  //  result.where((element) => {
-  //   return element['waste'] == 0;
-  // });
-  // print(result.fi);
-
-  // var bnb_result =
-  //     utils.finalize(bnbAlgorithm(coins, amountWithFees, 0), outputs, feeRate);
-  // var ks_result =
-  //     utils.finalize(knapsack(coins, amountWithFees), outputs, feeRate);
-  // // var sum = 0;
-  // // utxos.forEach((element) { })
-  // // var amountUtxos = utxos.fold(0, (sum, next) => sum.hashCode + next.value!);
-  //
-  // print("SRD RESULT IS $srd_result");
-  // print("SELECTION WASTE IS $selection_waste");
-  // print("SELECTION WASTE IS $selection_waste");
-  // var sum = outputs.fold(0, (sum, next) => sum.v + next.value!);
-  // var amount = outputs.reduce((v, e) {
-  //   print('v=$v e=$e result=${v.value! + e.value!}');
-  //   var result = v.value! + e.value!;
-  //   print("RESULT IS $result");
-  //   return result;
-  // });
-  // console.log(amount);
-  // const amount_with_fees = input_bytes * fee_rate + amount;
-  // const amount_utxos = utxos.reduce((a, {value}) => a + value, 0);
-  print(inputBytes);
+  print(result);
   return {};
 }

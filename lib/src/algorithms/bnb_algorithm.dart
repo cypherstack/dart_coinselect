@@ -1,3 +1,6 @@
+import 'dart:typed_data';
+
+import 'package:dart_coinselect/src/abstracts/io_model_abstract.dart';
 import 'package:dart_coinselect/src/utils.dart' as utils;
 import 'package:dart_coinselect/src/models/models.dart';
 
@@ -61,7 +64,7 @@ List<InputModel> bnbAlgorithm(
       currSelection[currSelection.length - 1] = false;
       OutputModel utxo = utxos[currSelection.length - 1];
       currValue -= utils.getSelectionAmount(true, utxo, i);
-      currWaste -= utxo.fee! - utxo.longTermFee!;
+      currWaste -= (utxo.fee ?? 0) - (utxo.longTermFee ?? 0);
     } else {
       OutputModel utxo = utxos[currSelection.length];
 
@@ -77,7 +80,7 @@ List<InputModel> bnbAlgorithm(
       } else {
         currSelection.add(true);
         currValue += utils.getSelectionAmount(true, utxo, i);
-        currWaste += utxo.fee! - utxo.longTermFee!;
+        currWaste += (utxo.fee ?? 0) - (utxo.longTermFee ?? 0);
       }
     }
   }
@@ -88,11 +91,15 @@ List<InputModel> bnbAlgorithm(
 
   for (int i = 0; i < bestSelection.length; i++) {
     if (bestSelection[i]) {
-      InputModel utxo =
-          InputModel(i: i, value: utxos[i].value, script: utxos[i].script);
+      InputModel utxo = InputModel(
+          i: i,
+          value: utxos[i].value,
+          script: utxos[i].script ?? ByteData(0),
+          fee: utxos[i].fee,
+          longTermFee: utxos[i].longTermFee,
+          effectiveValue: utxos[i].effectiveValue);
       outSet.add(utxo);
     }
   }
-
   return outSet;
 }

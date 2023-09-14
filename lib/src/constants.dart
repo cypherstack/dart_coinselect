@@ -11,4 +11,4 @@ const int txOutputPubKeyHash = 25;
 // Transaction blank output size
 const int txBlankOutput = txOutputBase + txOutputPubKeyHash;
 
-const int effective_fee_rate = 10;
+const int effectiveFeeRate = 10;

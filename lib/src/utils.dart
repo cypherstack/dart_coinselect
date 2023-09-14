@@ -1,4 +1,5 @@
 import 'dart:math';
+import 'dart:typed_data';
 
 import 'package:dart_coinselect/src/abstracts/io_model_abstract.dart';
 import 'package:dart_coinselect/src/constants.dart';
@@ -24,7 +25,7 @@ int outputBytes(OutputModel output) {
 // Get dust threshold
 // Returns the sum of the empty inputBytes and feeRate
 int dustThreshold(/*OutputModel output, */ int feeRate) {
-  return inputBytes(InputModel(i: 0)) * feeRate;
+  return inputBytes(InputModel(i: 0, script: ByteData(0))) * feeRate;
 }
 
 // Getting transaction bytes
@@ -59,23 +60,22 @@ SelectionModel finalize(
     List<InputModel> inputs, List<OutputModel> outputs, int feeRate) {
   final int bytesAccum = transactionBytes(inputs, outputs);
   final int feeAfterExtraOutput = feeRate * (bytesAccum + txBlankOutput);
+  int remainderAfterExtraOutput =
+      sumOrNull(inputs)! - (sumOrNull(outputs)! + feeAfterExtraOutput);
 
   int? inputSum = sumOrNull(inputs);
   int? outputSum = sumOrNull(outputs);
 
-  int remainderAfterExtraOutput;
   int fee = 0;
 
   if (inputSum != null && outputSum != null) {
-    remainderAfterExtraOutput = inputSum - (outputSum + feeAfterExtraOutput);
     fee = inputSum - outputSum;
   } else {
     return SelectionModel(feeRate * bytesAccum);
   }
 
-  if (remainderAfterExtraOutput > dustThreshold(/*OutputModel(), */ feeRate)) {
+  if (remainderAfterExtraOutput > dustThreshold(feeRate)) {
     outputs.add(OutputModel(value: remainderAfterExtraOutput));
-
     inputSum = sumOrNull(inputs);
     outputSum = sumOrNull(outputs);
   }
@@ -112,9 +112,10 @@ int getRandomInt(int minNum, int maxNum) {
 
 int getSelectionAmount(
     bool subtractFeeOutputs, OutputModel utxo, int position) {
-  InputModel inputUtxo = InputModel(i: position, script: utxo.script);
+  InputModel inputUtxo =
+      InputModel(i: position, script: utxo.script ?? ByteData(0));
   utxo.effectiveValue =
-      utxo.value! - (effective_fee_rate * inputBytes(inputUtxo));
+      utxo.value! - (effectiveFeeRate * inputBytes(inputUtxo));
   return subtractFeeOutputs ? utxo.value! : utxo.effectiveValue!;
 }
 

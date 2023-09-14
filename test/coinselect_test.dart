@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:typed_data';
 
 import 'package:dart_coinselect/dart_coinselect.dart';
 import 'package:dart_coinselect/src/models/models.dart';
@@ -32,8 +33,7 @@ void main() {
   var utxoObj = json.decode(utxoJson);
 
   utxoObj.forEach((element) {
-    OutputModel outputGroup =
-        OutputModel(value: element['value'], fee: 10, longTermFee: 10);
+    OutputModel outputGroup = OutputModel(value: element['value']);
     utxos.add(outputGroup);
   });
 

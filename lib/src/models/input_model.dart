@@ -17,8 +17,21 @@ class InputModel extends IOModelAbstract {
   @override
   String? address;
 
+  int? fee;
+
+  int? longTermFee;
+
+  int? effectiveValue;
+
   InputModel(
-      {required this.i, this.txid, this.value, this.script, this.address});
+      {required this.i,
+      this.txid,
+      this.value,
+      this.script,
+      this.address,
+      this.fee,
+      this.longTermFee,
+      this.effectiveValue});
 
   // Compares two InputModels. Checks equality status
   isEqual(InputModel other) {
@@ -31,7 +44,10 @@ class InputModel extends IOModelAbstract {
     return i == other.i &&
         scriptOk &&
         value == other.value &&
-        address == other.address;
+        address == other.address &&
+        fee == other.fee &&
+        longTermFee == other.longTermFee &&
+        effectiveValue == other.effectiveValue;
   }
 
   @override
@@ -41,6 +57,9 @@ class InputModel extends IOModelAbstract {
     if (address != null) str.add('"address": "$address"');
     if (value != null) str.add('"value": $value');
     if (script != null) str.add('"script": "${script.toString()}"');
+    if (fee != null) str.add('"fee": "$fee"');
+    if (longTermFee != null) str.add('"longTermFee": "$longTermFee"');
+    if (effectiveValue != null) str.add('"effectiveValue": "$effectiveValue"');
 
     return "{${str.join(",")}}";
   }
