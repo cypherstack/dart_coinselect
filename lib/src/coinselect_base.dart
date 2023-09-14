@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:math';
 
 import 'package:dart_coinselect/src/algorithms/algorithms.dart';
@@ -54,8 +55,8 @@ SelectionModel coinSelect(
 }
 
 // Coin selection TS to dart
-Map<dynamic, dynamic> coinSelection(List<OutputModel> utxos,
-    List<OutputModel> outputs, int feeRate, int longTermFee) {
+SelectionModel coinSelection(List<OutputModel> utxos, List<OutputModel> outputs,
+    int feeRate, int longTermFee) {
   int inputBytes = utils.transactionBytes([], outputs);
 
   var amount = utils.sumForgiving(outputs);
@@ -63,7 +64,9 @@ Map<dynamic, dynamic> coinSelection(List<OutputModel> utxos,
   int? amountUtxos = utils.sumForgiving(utxos);
 
   if (amountWithFees > amountUtxos! || (feeRate < 0 || longTermFee < 0)) {
-    return {"inputs": [], "outputs": []};
+    int bytesAccum = utils.transactionBytes([], []);
+    int fee = feeRate * bytesAccum;
+    return SelectionModel(fee, inputs: [], outputs: []);
   }
 
   List<OutputModel> coins = [];
@@ -88,30 +91,29 @@ Map<dynamic, dynamic> coinSelection(List<OutputModel> utxos,
   SelectionModel knapsackResult =
       utils.finalize(knapsack(coins, amountWithFees), ksOutputs, feeRate);
 
-  List<Map<dynamic, dynamic>> result = [
+  List<Map<dynamic, dynamic>> results = [
     {
       "result": srdResult,
-      "waste": srdResult.outputs!.isEmpty
+      "waste": srdResult.inputs!.isEmpty
           ? 1000000
           : utils.getSelectionWaste(
-              srdResult.outputs!, 10, amountWithFees, false)
+              srdResult.inputs!, 10, amountWithFees, false)
     },
     {
       "result": bnbResult,
-      "waste": bnbResult.outputs!.isEmpty
+      "waste": bnbResult.inputs!.isEmpty
           ? 1000000
-          : utils.getSelectionWaste(
-              bnbResult.outputs!, 0, amountWithFees, false)
+          : utils.getSelectionWaste(bnbResult.inputs!, 0, amountWithFees, false)
     },
     {
       "result": knapsackResult,
-      "waste": knapsackResult.outputs!.isEmpty
+      "waste": knapsackResult.inputs!.isEmpty
           ? 1000000
           : utils.getSelectionWaste(
-              knapsackResult.outputs!, 0, amountWithFees, false)
+              knapsackResult.inputs!, 0, amountWithFees, false)
     }
   ];
 
-  print(result);
-  return {};
+  results.sort((Map u1, Map u2) => u2['waste'] - u1['waste']);
+  return results.last["result"];
 }

@@ -119,7 +119,7 @@ int getSelectionAmount(
   return subtractFeeOutputs ? utxo.value! : utxo.effectiveValue!;
 }
 
-int getSelectionWaste(List<OutputModel> inputs, int changeCost, int target,
+int getSelectionWaste(List<InputModel> inputs, int changeCost, int target,
     bool useEffectiveValue) {
   int waste = 0;
   int selectedEffectiveValue = 0;
