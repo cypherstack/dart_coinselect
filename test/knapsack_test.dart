@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:typed_data';
 
 import 'package:dart_coinselect/src/abstracts/io_model_abstract.dart';
 import 'package:dart_coinselect/src/algorithms/knapsack_algorithm.dart';

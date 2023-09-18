@@ -10,7 +10,6 @@ List<InputModel> knapsack(List<OutputModel> utxos, int targetValue) {
   List<OutputModel> applicableGroups = List.empty(growable: true);
   List<OutputModel> setCoinsRet = List.empty(growable: true);
   int totalLower = 0;
-
   utxos.shuffle();
   utxos.asMap().forEach((key, utxo) {
     int amount = getSelectionAmount(false, utxo, key);
@@ -19,7 +18,7 @@ List<InputModel> knapsack(List<OutputModel> utxos, int targetValue) {
     } else if (amount < targetValue + minChange) {
       applicableGroups.add(utxo);
       totalLower += amount;
-    } else if (!utxo.isEqual(lowestLarger) ||
+    } else if (!lowestLarger.isEqual(utxo) ||
         amount < getSelectionAmount(false, lowestLarger, key)) {
       lowestLarger = utxo;
     }

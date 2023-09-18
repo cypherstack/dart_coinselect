@@ -114,8 +114,9 @@ int getSelectionAmount(
     bool subtractFeeOutputs, OutputModel utxo, int position) {
   InputModel inputUtxo =
       InputModel(i: position, script: utxo.script ?? ByteData(0));
-  utxo.effectiveValue =
-      utxo.value ?? 0 - (effectiveFeeRate * inputBytes(inputUtxo));
+  utxo.effectiveValue = (utxo.value != null)
+      ? utxo.value! - (effectiveFeeRate * inputBytes(inputUtxo))
+      : 0;
   return subtractFeeOutputs ? utxo.value ?? 0 : utxo.effectiveValue!;
 }
 
