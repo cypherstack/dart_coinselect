@@ -2,11 +2,9 @@ import 'dart:convert';
 import 'dart:typed_data';
 
 import 'package:dart_coinselect/dart_coinselect.dart';
-import 'package:dart_coinselect/src/models/models.dart';
 import 'package:dart_coinselect/src/models/selection_model.dart';
 import 'package:test/test.dart';
 
-import 'fixtures/fixtures.dart';
 import 'fixtures/bnb.dart' as utxos_json;
 
 void main() {
@@ -35,6 +33,28 @@ void main() {
       var result = coinSelection(utxos, outputs, 10, 10);
 
       expect(result.outputs?.length, 2);
+    });
+
+    test(
+        '1 million satoshis, sum of outputs value should be greater than 1 million',
+        () {
+      List<OutputModel> outputs = [];
+      outputs.add(OutputModel(value: 1000000));
+      SelectionModel result = coinSelection(utxos, outputs, 1, 10);
+      int total = 0;
+      result?.outputs?.forEach((element) {
+        total += element.value!;
+      });
+      expect(total, greaterThanOrEqualTo(1000000));
+    });
+
+    test(
+        '1 million satoshis, with 10 sats/B for fee and 1 sat/B for long term fee, should have 2 inputs or less',
+        () {
+      List<OutputModel> outputs = [];
+      outputs.add(OutputModel(value: 100000));
+      SelectionModel result = coinSelection(utxos, outputs, 10, 1);
+      expect(result.inputs?.length, lessThanOrEqualTo(2));
     });
 
     test('Insufficient funds, should return an empty solution', () {

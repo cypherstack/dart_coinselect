@@ -115,8 +115,8 @@ int getSelectionAmount(
   InputModel inputUtxo =
       InputModel(i: position, script: utxo.script ?? ByteData(0));
   utxo.effectiveValue =
-      utxo.value! - (effectiveFeeRate * inputBytes(inputUtxo));
-  return subtractFeeOutputs ? utxo.value! : utxo.effectiveValue!;
+      utxo.value ?? 0 - (effectiveFeeRate * inputBytes(inputUtxo));
+  return subtractFeeOutputs ? utxo.value ?? 0 : utxo.effectiveValue!;
 }
 
 int getSelectionWaste(List<InputModel> inputs, int changeCost, int target,

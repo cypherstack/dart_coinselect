@@ -35,7 +35,9 @@ List<InputModel> knapsack(List<OutputModel> utxos, int targetValue) {
   }
 
   if (totalLower < targetValue) {
-    if (lowestLarger.isEqual(OutputModel())) return [];
+    if (lowestLarger.isEqual(OutputModel())) {
+      return [];
+    }
     return [
       InputModel(
           i: 0,
@@ -43,6 +45,7 @@ List<InputModel> knapsack(List<OutputModel> utxos, int targetValue) {
           script: lowestLarger.script ?? ByteData(0))
     ];
   }
+
   applicableGroups.sort((a, b) => b.value! - a.value!);
   Map<int, List<bool>> abs =
       approximateBestSubset(applicableGroups, totalLower, targetValue);
@@ -59,7 +62,7 @@ List<InputModel> knapsack(List<OutputModel> utxos, int targetValue) {
     return [
       InputModel(
           i: 0,
-          value: lowestLarger.value,
+          value: lowestLarger.value ?? 0,
           script: lowestLarger.script ?? ByteData(0))
     ];
   } else {

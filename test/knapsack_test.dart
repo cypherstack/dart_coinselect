@@ -21,13 +21,13 @@ void main() {
 
     test('100000 satoshis as target, the sum should be greater than 100000',
         () {
-      List<IOModelAbstract> result = knapsack(utxos, 100000);
+      List<InputModel> result = knapsack(utxos, 100000);
       int? sum = sumForgiving(result);
       expect(sum, greaterThan(100000));
     });
 
     test('10000 satoshis as target, should return 2 inputs', () {
-      List<IOModelAbstract> result = knapsack(utxos, 10000);
+      List<InputModel> result = knapsack(utxos, 10000);
       expect(result.length, 2);
     });
   });
