@@ -6,7 +6,7 @@ import 'package:dart_coinselect/src/algorithms/knapsack_algorithm.dart';
 import 'package:dart_coinselect/src/utils.dart';
 import 'package:test/test.dart';
 import 'package:dart_coinselect/src/models/models.dart';
-import 'fixtures/bnb.dart' as utxos_json;
+import 'fixtures/utxos.dart' as utxos_json;
 
 void main() {
   group("Test Knapsack", () {

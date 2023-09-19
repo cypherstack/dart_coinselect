@@ -5,16 +5,16 @@ import 'package:dart_coinselect/dart_coinselect.dart';
 import 'package:dart_coinselect/src/models/selection_model.dart';
 import 'package:test/test.dart';
 
-import 'fixtures/bnb.dart' as utxos_json;
+import 'fixtures/utxos.dart' as utxos_json;
 
 void main() {
-  List<OutputModel> utxos = [];
+  List<InputModel> utxos = [];
   var utxoJson = jsonEncode(utxos_json.utxos);
   var utxoObj = json.decode(utxoJson);
 
-  utxoObj.forEach((element) {
-    OutputModel outputGroup = OutputModel(value: element['value']);
-    utxos.add(outputGroup);
+  utxoObj.asMap().forEach((key, element) {
+    InputModel inputGroup = InputModel(i: key, value: element['value']);
+    utxos.add(inputGroup);
   });
 
   group('Test coin selection', () {
@@ -73,9 +73,9 @@ void main() {
         }
       ]);
       var utxoObj = json.decode(utxoJson);
-      utxoObj.forEach((element) {
-        OutputModel outputGroup = OutputModel(value: element['value']);
-        utxos.add(outputGroup);
+      utxoObj.asMap().forEach((key, element) {
+        InputModel inputGroup = InputModel(i: key, value: element['value']);
+        utxos.add(inputGroup);
       });
       List<OutputModel> outputs = [];
       outputs.add(OutputModel(value: 100000));

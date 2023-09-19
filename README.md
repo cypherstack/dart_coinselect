@@ -11,17 +11,13 @@ An unspent transaction output (UTXO) selection module for bitcoin.
 ## Algorithms
 Module | Algorithm | Re-orders UTXOs?
 -|-|-
-`null` | Blackjack, with Accumulative fallback | By Descending Value
-`AlgorithmsEnum.accumulative` | Accumulative - accumulates inputs until the target value (+fees) is reached, skipping detrimental inputs | -
-`AlgorithmsEnum.blackjack` | Blackjack - accumulates inputs until the target value (+fees) is matched, does not accumulate inputs that go over the target value (within a threshold) | -
-`AlgorithmsEnum.breakAlgo` | Break - breaks the input values into equal denominations of `output` (as provided) | -
-`AlgorithmsEnum.split` | Split - splits the input values evenly between all `outputs`, any provided `output` with `.value` remains unchanged | -
+`AlgorithmsEnum.bnb` | Branch and Bound - Searches UTXOs in a depth first fashion and select the least wasteful change-avoidant input set | -
+`AlgorithmsEnum.knapsack` | Knapsack - Sort all UTXOs by value and run 1000 iterations of selections randomly picking UTXOs with a 50% chance from largest to smallest | -
+`AlgorithmsEnum.srd` | SRD - Pick UTXOs randomly with equal chance from all available UTXOs | -
 
 
 **Note:** Each algorithm will add a change output if the `input - output - fee` value difference is over a dust threshold.
 This is calculated independently by `utils.finalize`, irrespective of the algorithm chosen, for the purposes of safety.
-
-**Pro-tip:** if you want to send-all inputs to an output address, `AlgorithmsEnum.split` with a partial output (`.address` defined, no `.value`) can be used to send-all, while leaving an appropriate amount for the `fee`.
 
 ## Example
 
@@ -43,14 +39,14 @@ void main() {
     OutputModel(address: '1EHNa6Q4Jz2uvNExL497mE43ikXhwF6kZm', value: 5000)
   ];
 
-  final selection = coinSelect(utxos, outputs, feeRate);
+  final selection = coinSelection(utxos, outputs, feeRate, 10);
 
   print(selection);
-  // Output is '{"fee": "10560"}"
+  // Output is '{"fee": "5000"}"
   // the accumulated fee is always returned for analysis
 
   // .inputs and .outputs will be null if no solution was found
-  if (selection.inputs == null || selection.outputs == null) return;
+  if (selection.inputs!.isEmpty || selection.outputs!.isEmpty) return;
 
   // Create raw transaciton and sign it...
 }

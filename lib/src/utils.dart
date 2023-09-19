@@ -25,7 +25,7 @@ int outputBytes(OutputModel output) {
 // Get dust threshold
 // Returns the sum of the empty inputBytes and feeRate
 int dustThreshold(/*OutputModel output, */ int feeRate) {
-  return inputBytes(InputModel(i: 0, script: ByteData(0))) * feeRate;
+  return inputBytes(InputModel(i: 0)) * feeRate;
 }
 
 // Getting transaction bytes
@@ -70,8 +70,6 @@ SelectionModel finalize(
 
   if (inputSum != null && outputSum != null) {
     fee = inputSum - outputSum;
-  } else {
-    return SelectionModel(feeRate * bytesAccum);
   }
 
   if (remainderAfterExtraOutput > dustThreshold(feeRate)) {
@@ -138,6 +136,9 @@ int getSelectionWaste(List<InputModel> inputs, int changeCost, int target,
   }
   return waste;
 }
+
+/// Find a subset of the OutputGroups that is at least as large as, but as close
+/// as possible to, the  target amount; solve subset sum.
 
 Map<int, List<bool>> approximateBestSubset(
     List<OutputModel> groups, int totalLower, int targetValue) {

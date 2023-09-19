@@ -1,4 +1,3 @@
-export 'accumulative_algorithm.dart';
-export 'blackjack_algorithm.dart';
-export 'break_algorithm.dart';
-export 'split_algorithm.dart';
+export 'bnb_algorithm.dart';
+export 'knapsack_algorithm.dart';
+export 'srd_algorithm.dart';

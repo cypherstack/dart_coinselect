@@ -15,15 +15,13 @@ void main() {
     OutputModel(address: '1EHNa6Q4Jz2uvNExL497mE43ikXhwF6kZm', value: 5000)
   ];
 
-  final selection = coinSelect(utxos, outputs, feeRate);
-
+  final selection = coinSelection(utxos, outputs, feeRate, 10);
   print(selection);
-  // Output is  'Instance of 'SelectionModel': {"fee": "10560}"
-  // Because inputs value is lower than outputs value + fee
+  // Output is '{"fee": "5000"}"
   // the accumulated fee is always returned for analysis
 
   // .inputs and .outputs will be null if no solution was found
-  if (selection.inputs == null || selection.outputs == null) return;
+  if (selection.inputs!.isEmpty || selection.outputs!.isEmpty) return;
 
   // Create raw transaciton and sign it...
 }

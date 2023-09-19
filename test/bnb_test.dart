@@ -1,11 +1,9 @@
 import 'dart:convert';
 
 import 'package:dart_coinselect/dart_coinselect.dart';
-import 'package:dart_coinselect/src/algorithms/bnb_algorithm.dart';
-import 'package:dart_coinselect/src/models/models.dart';
 import 'package:test/test.dart';
 
-import 'fixtures/bnb.dart' as utxos_json;
+import 'fixtures/utxos.dart' as utxos_json;
 
 void main() {
   group("Test BNB", () {
